@@ -1,0 +1,123 @@
+#include <string>
+#include <iostream>
+using namespace std;
+#define NONE -1
+#define LEFT 0
+#define RIGHT 1
+#define UP 2
+#define DOWN 3
+#define INF 987654321
+int N,M,MIN;
+bool checkIndex(int n,int m){
+	if(n<0||m<0||n==N||m==M)return false;
+	else return true;
+}
+bool checkVisit(bool** visit,int n,int m){
+	if(n<0||m<0||n==N||m==M)return true;
+	if(visit[n][m])return false;
+	else return true;
+}
+bool checkPass(int** arr,bool** visit,int n,int m){
+	if(n<0||m<0||n==N||m==M)return false;
+	if(visit[n][m])return false;
+	if(arr[n][m] == 0)return false;
+	return true;
+}
+bool searchMaze(int** arr,bool** visit,int n,int m,int len,int DIR){
+	if(!checkPass(arr,visit,n,m))return false;
+	//cout << "(" << n << "," << m << ")" << endl;
+	//cout << "DIR : " << DIR<< endl;
+	if(n==N-1 && m==M-1){
+		if(MIN > len)MIN = len;
+		//cout << "MIN : " << len << endl;
+		return true;
+	}
+	visit[n][m] = true;
+
+	bool IsCycle = false;
+	if(DIR!=RIGHT){
+		if(!checkVisit(visit,n,m-1)){
+			visit[n][m] = false;
+			return false;
+		}
+	}
+	if(DIR!=LEFT){
+		if(!checkVisit(visit,n,m+1)){
+			visit[n][m] = false;
+			return false;
+		}
+	}
+	if(DIR!=DOWN){
+		if(!checkVisit(visit,n-1,m)){
+			visit[n][m] = false;
+			return false;
+		}
+	}
+	if(DIR!=UP){
+		if(!checkVisit(visit,n+1,m)){
+			visit[n][m] = false;	
+			return false;
+		}
+	}	
+	bool isRight = checkPass(arr,visit,n,m+1);
+	bool isDown  = checkPass(arr,visit,n+1,m);
+	if(!isRight && !isDown){
+		if(DIR!=RIGHT){
+			if(searchMaze(arr,visit,n,m-1,len+1,LEFT))return true;
+		}
+		if(DIR!=DOWN){
+			if(searchMaze(arr,visit,n-1,m,len+1,UP))return true;
+		}
+	}else{
+		if(isRight){
+			if(DIR!=LEFT){
+				if(searchMaze(arr,visit,n,m+1,len+1,RIGHT))return true;
+			}
+		}
+
+		if(isDown){
+			if(DIR!=UP){
+				if(searchMaze(arr,visit,n+1,m,len+1,DOWN))return true;
+			}
+		}
+	}
+	
+	visit[n][m] = false;
+
+	return false;
+}
+
+int main(){
+	// Get input data..
+	cin >> N >> M ;
+	int** arr = new int*[N];
+	bool** visit = new bool*[N];
+	for(int n = 0; n < N; n++){
+		arr[n] = new int[M];
+		visit[n] = new bool[N];
+		string m_values;
+		cin >> m_values;
+		//cout << m_values << endl;
+		for(int m = 0 ; m < M; m++){
+			int val = int(m_values[m]-'0') % 48;
+			//cout << "[" << val << "]";
+			arr[n][m] = val;
+			visit[n][m] = false;
+		}
+	}
+
+	// Test print
+	
+	//for(int n = 0; n < N; n++){
+	//	for(int m = 0 ; m < M; m++){
+	//		cout << arr[n][m];
+	//	}cout << endl;
+	//}
+	
+
+	MIN = INF;
+	searchMaze(arr,visit,0,0,1,NONE);
+	cout << MIN << endl;
+	
+	return 0;
+}*/
